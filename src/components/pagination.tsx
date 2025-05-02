@@ -1,10 +1,14 @@
+"use client"
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 type Props = {
     currentPage : number;
-    totalPages : number;
 }
 
-export const Pagination = ({ currentPage, totalPages }: Props) => {
+export const Pagination = ({ currentPage }: Props) => {
+
+  const searchParams = useSearchParams();
+  const query = searchParams.get("query"); 
   const pageNumbers = [];
   const startPage = Math.max( currentPage - 1, 1 );
   const endPage = Math.min( startPage + 2, 10 );
@@ -16,7 +20,7 @@ export const Pagination = ({ currentPage, totalPages }: Props) => {
       {
         currentPage > 1 && (
           <Link 
-            href={ `?page=${ currentPage -1 }` }
+          href={`?query=${query}&page=${currentPage - 1}`}
             className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"  >
               prev
           </Link>
@@ -25,7 +29,7 @@ export const Pagination = ({ currentPage, totalPages }: Props) => {
       {startPage > 1 && (
         
         <Link
-          href={`?page=1`}
+        href={`?query=${query}&page=1`}
           className={`px-3 py-1 rounded ${
             currentPage === 1
               ? "bg-blue-500 text-white"
@@ -40,7 +44,7 @@ export const Pagination = ({ currentPage, totalPages }: Props) => {
       { pageNumbers.map( (p) => (
         <Link 
           key={p}
-          href={ `?page=${ p  }` }
+          href={`?query=${query}&page=${p}`}
           className={`px-3 py-1 rounded ${
             p === currentPage
               ? "bg-blue-500 text-white"
@@ -53,13 +57,12 @@ export const Pagination = ({ currentPage, totalPages }: Props) => {
       } 
       { currentPage < 10 && (
         <Link
-          href={`?page=${currentPage + 1}`}
+          href={`?query=${query}&page=${currentPage + 1}`}
           className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
         >
             Next
         </Link>
       )
-        
       }
     </div>
   );

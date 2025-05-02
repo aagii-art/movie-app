@@ -2,21 +2,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
-type Movie = {
-  id: number;
-  title: string;
-  overview : string
-  poster_path : string
-  trailerKey: string | null;
-};
-type videoRes = {
-  type: string;
-  site: string;
-  key: string;
-};
 
 export const MovieData = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<any []>([]);
   const [ currentIndex, setCurrentIndex ] = useState( 0 )
   const [ showTrailer, setShowTrailer ] = useState(false)
   
@@ -25,7 +13,7 @@ export const MovieData = () => {
     if( !showTrailer && movies.length > 0 ){
        interval = setInterval( () => {
         setCurrentIndex( ( prevValue ) => ( prevValue + 1 ) % movies.length );
-      }, 3000 )
+      }, 5000 )
     }
     return () => clearInterval(interval);
   }, [movies, showTrailer, currentIndex ] )
@@ -42,8 +30,8 @@ export const MovieData = () => {
             },
           }
         );
-        // console.log("res", res.data.results);
-
+        console.log(res.data.results);
+        
         const moviesWithVideos = await Promise.all(
           res.data.results.map(async (v: any) => {
             const videoRes = await axios(
@@ -54,18 +42,15 @@ export const MovieData = () => {
                 },
               }
             );
-            // console.log("videoRes", videoRes);
-            const trailer = (videoRes.data.results as videoRes[]).find(
-              (v: videoRes) => v.type === "Trailer" && v.site === "YouTube"
+            const trailer = (videoRes.data.results as any []).find(
+              (v: any) => v.type === "Trailer" && v.site === "YouTube"
             );
-            // console.log(" trailer ", trailer);
             return {
               ...v,
               trailerKey: trailer ? trailer.key : null,
             };
           })
         );
-        // console.log(moviesWithVideos, "movies");
 
         setMovies(moviesWithVideos);
       } catch (error) {
@@ -77,51 +62,92 @@ export const MovieData = () => {
   const currentMovie = movies[currentIndex]
   console.log( "current movie", currentMovie );
   
-  return (
+  return (   <>
     <div
-     className=" bg-amber-100 w-[100%] h-[800px] bg-no-repeat bg-cover bg-center "
-     style={{ backgroundImage : movies.length > 0 ? `url(https://image.tmdb.org/t/p/w500${movies[currentIndex].poster_path})` : "none" }}
+     className=" hidden relative w-[100%] mt-[80px] h-[600px]  bg-cover bg-center  bg-no-repeat md:flex justify-between items-center pl-[8%] "
+     style={{ backgroundImage : movies.length > 0 ? `url(https://image.tmdb.org/t/p/original${movies[currentIndex].backdrop_path})` : "none" }}
       >
-        <Button onClick={ () => {
-          setCurrentIndex( (prev) => prev === 0 ? movies.length - 1 : prev -1 )
-          // setShowTrailer( false )
-         } } > previous
-        </Button>
-        <Button onClick={ () => {
-            setCurrentIndex( (prev) => ( prev + 1 ) % movies.length )
-            // setShowTrailer( false )
-          } }
-             >Next
-        </Button>
       { movies.length  > 0 && (
-        <div key={currentIndex} >
+         
+        <div key={currentIndex} className=" w-[90%] h-[40%] flex flex-col gap-[10px]  " >
           { showTrailer && currentMovie.trailerKey ? (
-            <>
+            <div className=" absolute top-[10%]  w-[85%] h-[100%] " >
                <iframe
                   src={`https://www.youtube.com/embed/${currentMovie.trailerKey}`}
-                  className=" w-[50%] h-[600px] "
+                  className=" w-full  h-full "
                   allowFullScreen >
                </iframe>
                <Button
                onClick={ () => setShowTrailer(false) }
-                 className="text-white" >
-                 
-                    back 
+                 className="text-white absolute z-[2] w-[30px] h-[30px] right-[2%] top-[2%] hover:bg-gray-500 bg-gray-400 rounded-full " >
+                   ✕
               </Button>
-            </>) : (
-            <>
-              <h1> { currentMovie.title } </h1>
-              <p className=" " > { currentMovie.overview } </p>
+            </div>) : (
+            <> 
+              <p className=" text-[16px] text-white " > Now playing : </p>
+              <h1 className=" text-[36px] text-white font-bold " > { currentMovie.title } </h1>
+              <p className=" text-[#FAFAFA] text-[18px] font-semibold mb-[20px] " > 
+                ⭐️ {currentMovie.vote_average} <span className=" text-[#71717A] text-[16px] font-normal " >/10</span>
+              </p>
+              <p className=" text-[#FAFAFA] text-[12px] w-[30%] " > { currentMovie.overview } </p>
               <Button 
                 onClick={ () => setShowTrailer(true) }
-                className=" text-white "
-                 > watch trailer
+                className=" hover:bg-gray-300 text-[14px] bg-[#F4F4F5] mt-[20px] w-[145px] "
+                 >  <span> ▶️ </span> Watch Trailer
               </Button>
             </>) 
           }
         </div>
        ) 
       }
+      <Button
+       onClick={ () => {
+            setCurrentIndex( (prev) => ( prev + 1 ) % movies.length )
+          } }
+       className=" w-[35px] h-[30-px] rounded-full bg-gray-200 hover:bg-gray-400 mr-[10px] "
+      >    ➤
+      </Button>
     </div>
-  );
+    
+    <div
+     className=" md:hidden relative w-[100%] mt-[80px] h-[246px] bg-no-repeat bg-cover bg-center  justify-between items-center pl-[8%] "
+     style={{ backgroundImage : movies.length > 0 ? `url(https://image.tmdb.org/t/p/original/${movies[currentIndex].backdrop_path})` : "none" }}
+      >
+    </div>
+    { showTrailer && currentMovie.trailerKey && (
+            <div className=" md:hidden absolute top-[100px]  w-[85%] h-[500px] " >
+               <iframe
+                  src={`https://www.youtube.com/embed/${currentMovie.trailerKey}`}
+                  className=" w-full  h-full "
+                  allowFullScreen >
+               </iframe>
+               <Button
+               onClick={ () => setShowTrailer(false) }
+                 className="text-white absolute z-[2] w-[30px] h-[30px] right-[2%] top-[2%] hover:bg-gray-500 bg-gray-400 rounded-full " >
+                   ✕
+              </Button>
+            </div>)
+      }
+      <div className=" w-full  md:hidden p-[20px] border-b border-gray-300 " >
+          { movies.length > 0 && <>
+          <div className=" flex justify-between items-center  h-[80px] " >
+            <div className=" " >
+              <p className=" text-[14px] " > Now Playing : </p>
+              <p className=" text-[24px] font-semibold " > { currentMovie.title } </p>
+            </div>
+            <p className="  text-[18px] mt-[14px] font-semibold mb-[20px] " > 
+                ⭐️ {currentMovie.vote_average} <span className=" text-[#71717A] text-[16px] font-normal " >/10</span>
+            </p>
+          </div>
+          <p className=" text-[#09090B] text-[14px] " > { currentMovie.overview } </p>
+          <Button 
+                onClick={ () => setShowTrailer(true) }
+                className=" hover:opacity-80 text-[14px] bg-black text-white mt-[20px] w-[145px] "
+                 >  <span> ▶️ </span> Watch Trailer
+          </Button>
+
+          </>}
+      </div>
+
+    </>);
 };

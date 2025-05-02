@@ -33,7 +33,7 @@ const MovieTypePage = async ({ params, searchParams }: Props) => {
          }
 
        </div> 
-      <Pagination currentPage={axe} totalPages={total_pages} /> 
+      <Pagination currentPage={axe}  /> 
 
     </div> 
   );

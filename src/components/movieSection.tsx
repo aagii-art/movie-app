@@ -2,23 +2,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-
-type Movie = {
-  id: number;
-  title: string;
-  poster_path: string;
-  overview: string;
-};
-
-type MovieSectionProps = {
-  type: "top_rated" | "upcoming" | "popular";
-  title: string;
-};
-
-export const MovieSection = ({ type, title }: MovieSectionProps) => {
-  const [movies, setMovies] = useState<Movie[]>([]);
-
+export const MovieSection = ({ type, title }: { type : any, title : any }) => {
+  const [movies, setMovies] = useState< any []>([]);
+  const router = useRouter();
   useEffect(() => {
     const fetchMovies = async () => {
       try {
@@ -27,8 +15,6 @@ export const MovieSection = ({ type, title }: MovieSectionProps) => {
             api_key: "7218121adc89327f121be3514953c73f",
           },
         });
-        console.log(res);
-        
         setMovies(res.data.results.slice(0, 10));
       } catch (error) {
         console.error(`${title} хэсэг дуудахад алдаа гарлаа`, error);
@@ -39,17 +25,25 @@ export const MovieSection = ({ type, title }: MovieSectionProps) => {
   console.log(movies);
   
   return (
-    <div className="w-[90%] bg-green-100 my-6">
-       <h2 className="text-xl font-bold mb-4">{title}</h2>
-       <Link href={`/movies/${type}`} className="text-blue-500 underline text-sm">
-          See more
-       </Link>
-       <div className="grid grid-cols-5 gap-4">
+    <div className="w-[90%] my-[20px]  ">
+       <div className=" flex justify-between items-center " >
+         <h2 className="text-[24px] text-[#09090B] font-semibold py-[20px] ">{title}</h2>
+         <Link href={`/movies/${type}`} className="text-blue-500 underline text-sm">
+            See more
+         </Link>
+       </div>
+
+       <div className="grid grid-cols-2 md:grid-cols-5 gap-[20px] ">
          {movies.map((movie) => (
-          <div key={movie.id} className="bg-white p-4 rounded-md shadow">
-            <img src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`} />
-            <h3 className="font-semibold mt-2">{movie.title}</h3>
-            <p className="text-sm text-gray-600 line-clamp-3">{movie.overview}</p>
+          <div 
+           key={movie.id}
+           onClick={ () => router.push(`/movieDetail/${movie.id}`) } 
+           className=" rounded-lg bg-[#F4F4F5] pb-[20px] ">
+            <img 
+             className=" w-full rounded-t-lg "
+             src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`} />
+             <p className=" text-[14px] " > ⭐️ {movie.vote_average} <span className="text-[#71717A] text-[12px] " >/10</span> </p> 
+             <p className=" text-[18px] text-[#09090B] ">{movie.title}</p>
           </div>
         ))}
       </div>

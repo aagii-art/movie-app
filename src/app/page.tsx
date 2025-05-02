@@ -3,7 +3,7 @@ import { MovieSection } from "@/components/movieSection";
 
 const Home = () => {
   return (
-    <div className=" bg-gray-50 w-[100%] flex flex-col items-center ">
+    <div className=" bg-gray-50 w-[100%] h-full flex flex-col items-center ">
       <MovieData />
       <MovieSection type="upcoming" title="Upcoming" />
       <MovieSection type="popular" title="Popular" />
