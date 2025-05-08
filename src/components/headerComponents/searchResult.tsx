@@ -1,15 +1,29 @@
 "use client"
 import { useRouter } from "next/navigation";
+type Movie = {
+   id: number;
+   title: string;
+   vote_average: number;
+   release_date: string;
+   poster_path?: string;
+ };
+ 
+ type SearchResultsProps = {
+   movies: Movie[];
+   isButtonClicked: boolean;
+   seeMoreClicked: () => void;
+ };
+export const SearchResults = ({ movies, seeMoreClicked, isButtonClicked }: SearchResultsProps ) => {
 
-export const SearchResults = ({ movies, seeMoreClicked, isButtonClicked }:
-  { movies: any []; isButtonClicked : any; seeMoreClicked : any; }) => {
   const router = useRouter(); 
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
   return (
      <div className={`${ !isButtonClicked && isMobile ? " hidden " : "" }`}>
          { movies.map( ( m ) => (
-           <div className=" flex w-full gap-[10px] p-[8px] border-b border-b-[#E4E4E7] dark:border-[#27272A] " >
+           <div 
+              key={m.id}
+              className=" flex w-full gap-[10px] p-[8px] border-b border-b-[#E4E4E7] dark:border-[#27272A] " >
               { m.poster_path && (
                  <img
                     src={`https://image.tmdb.org/t/p/original${m.poster_path}`}

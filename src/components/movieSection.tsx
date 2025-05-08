@@ -4,10 +4,15 @@ import Link from "next/link";
 const key = process.env.NEXT_PUBLIC_KEY;
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
-export const MovieSection = ({ type, title }: { type : any, title : any }) => {
+type Movie = {
+  id: number;
+  title: string;
+  vote_average: number;
+  poster_path: string;
+};
+export const MovieSection = ({ type, title }: { type : string, title : string }) => {
   const router = useRouter();
-  const [movies, setMovies] = useState< any []>([]);
+  const [movies, setMovies] = useState< Movie []>([]);
 
   useEffect(() => {
     const fetchMovies = async () => {

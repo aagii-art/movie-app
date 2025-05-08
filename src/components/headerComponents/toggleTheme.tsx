@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 
-const ThemeToggle = ( { isButtonClicked } : { isButtonClicked  : any } ) => {
+const ThemeToggle = ( { isButtonClicked } : { isButtonClicked  : boolean } ) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {

@@ -1,3 +1,10 @@
+type SearchInputProps = {
+  clickEnter: () => void;
+  searchMovie: (value: string) => void;
+  resetIsClickEnter: () => void;
+  setIsButtonClicked: (value: boolean) => void;
+  isButtonClicked: boolean;
+};
 export const SearchInput = ({
   clickEnter,
   searchMovie,
@@ -5,15 +12,9 @@ export const SearchInput = ({
   isButtonClicked,
   setIsButtonClicked,
   
- }: {
-  clickEnter: any;
-  searchMovie: any;
-  resetIsClickEnter  : any;
-  setIsButtonClicked : any;
-  isButtonClicked: any
- }) => {
+ } : SearchInputProps ) => {
 
-  const handleKeyDown = (e: any) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       clickEnter();
     }

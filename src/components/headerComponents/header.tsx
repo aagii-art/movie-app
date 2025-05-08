@@ -8,16 +8,27 @@ import { useEffect, useState } from "react";
 import { ChevronDownIcon} from "lucide-react";
 import { GenreList, SearchInput, SearchResults } from "./index";
 const inter = Inter({ subsets: ["latin"], style: ["normal", "italic"] });
+type Genre = {
+  id: number;
+  name: string;
+};
+type Movie = {
+  id: number;
+  title: string;
+  vote_average: number;
+  release_date: string;
+  poster_path?: string;
+};
 
 export const Header = () => {
   const router = useRouter();
   const [see, nosee] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [genres, setGenres] = useState< any []>([]);
+  const [genres, setGenres] = useState< Genre []>([]);
   const [searchMovie, setSearchMovie] = useState("");
   const [showGenres, setShowGenres] = useState(false);
   const [isButtonClicked, setIsButtonClicked] = useState(false);
-  const [searchResults, setSearchResults] = useState<any []>([]);
+  const [searchResults, setSearchResults] = useState<Movie []>([]);
   const [ isSeeMoreClicked, setIsSeeMoreClicked ] = useState(false)
   const [selectedGenreId, setSelectedGenreId] = useState<number []>([]);
   const key = process.env.NEXT_PUBLIC_KEY;

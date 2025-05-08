@@ -3,17 +3,45 @@ import axios from "axios";
 const key = process.env.NEXT_PUBLIC_KEY;
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation"
+interface Genre {
+  id: number;
+  name: string;
+}
 
+interface Movie {
+  id: number;
+  title: string;
+  release_date: string;
+  runtime: number;
+  vote_average: number;
+  vote_count: number;
+  poster_path: string;
+  backdrop_path: string;
+  genres: Genre[];
+  overview: string;
+}
+
+interface SimilarMovie {
+  id: number;
+  title: string;
+  poster_path: string;
+  vote_average: number;
+}
+type video = {
+  type : string;
+  site : string;
+}
+type person = { job : string }
 export default function MovieDetail () {
     const router = useRouter();
     const { id } = useParams();
-    const [star, setStar] = useState<any []>([]);
-    const [movie, setMovie] = useState<any>(null);
-    const [writer, setWriter] = useState<any>(null);
-    const [trailer, setTrailer] = useState<any>(null);  
-    const [director, setDirector] = useState<any>(null);
+    const [star, setStar] = useState<string []>([]);
+    const [movie, setMovie] = useState< Movie | null >(null);
+    const [writer, setWriter] = useState< string | null >(null);
+    const [trailer, setTrailer] = useState<string | null >(null);  
+    const [director, setDirector] = useState<string | null >(null);
     const [showTrailer, setShowTrailer] = useState(false);
-    const [similarMovies, setSimilarMovies] = useState<any[]>([]);
+    const [similarMovies, setSimilarMovies] = useState<SimilarMovie []>([]);
 
     const movieTime = ( v : any ) => {
       const hour = Math.floor( v / 60 );
@@ -35,7 +63,7 @@ export default function MovieDetail () {
                   api_key: key,
                 },
               });
-            const trailerData = videoRes.data.results.find((video: any) => video.site === 'YouTube' && video.type === 'Trailer');
+            const trailerData = videoRes.data.results.find((video: video) => video.site === 'YouTube' && video.type === 'Trailer');
               if (trailerData) {
                 setTrailer(`https://www.youtube.com/embed/${trailerData.key}`);
               }
@@ -45,13 +73,13 @@ export default function MovieDetail () {
                 },
               });
               const credits = people.data;
-              const directorData = credits.crew.find((person: any) => person.job === "Director");
-              const writerData = credits.crew.find((person: any) => person.job === "Writer" || person.job === "Screenplay" );
+              const directorData = credits.crew.find((person: person) => person.job === "Director");
+              const writerData = credits.crew.find((person: person ) => person.job === "Writer" || person.job === "Screenplay" );
               const topCast = credits.cast.slice(0, 3); 
               if (directorData) setDirector(directorData.name);
               if (writerData) setWriter(writerData.name);
               setStar(topCast.map((actor: any) => actor.name));
-              const isMobile = innerWidth <= 768; 
+              const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
               const movieNumber = isMobile ? 2 : 5;
               const similarRes = await axios(`https://api.themoviedb.org/3/movie/${id}/recommendations`, {
                 params: {

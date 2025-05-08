@@ -3,11 +3,23 @@ import axios from "axios";
 import { Button } from "./ui/button";
 const key = process.env.NEXT_PUBLIC_KEY;
 import { useEffect, useState } from "react";
-
+type Movie = {
+  id: number;
+  title: string;
+  vote_average: number;
+  release_date: string;
+  overview: string;
+  backdrop_path?: string;
+  trailerKey?: string;
+};
+type video = {
+  type : string;
+  site : string;
+};
 export const MovieData = () => {
-  const [movies, setMovies] = useState<any []>([]);
-  const [ currentIndex, setCurrentIndex ] = useState( 0 )
-  const [ showTrailer, setShowTrailer ] = useState(false)
+  const [movies, setMovies] = useState<Movie []>([]);
+  const [ currentIndex, setCurrentIndex ] = useState<number>( 0 )
+  const [ showTrailer, setShowTrailer ] = useState<boolean>(false)
   
   useEffect( () => {
     let interval : any;
@@ -30,7 +42,7 @@ export const MovieData = () => {
                               },
         });
         const moviesWithVideos = await Promise.all(
-              res.data.results.map( async (v: any) => {
+              res.data.results.map( async (v: Movie) => {
                   const videoRes = await axios(`https://api.themoviedb.org/3/movie/${v.id}/videos`,
                              {
                               params: {
@@ -38,7 +50,7 @@ export const MovieData = () => {
                                       },
                    });
                    const trailer = videoRes.data.results.find(
-                         (v: any) => v.type === "Trailer" && v.site === "YouTube"
+                         (v : video) => v.type  === "Trailer" && v.site === "YouTube"
                    );
                    return {
                        ...v, trailerKey: trailer ? trailer.key : null,

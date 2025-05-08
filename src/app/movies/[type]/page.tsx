@@ -4,14 +4,19 @@ const key = process.env.NEXT_PUBLIC_KEY;
 import { useEffect, useState } from "react";
 import { Pagination } from "@/components/pagination";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
-
+interface Movie {
+  id: number;
+  title: string;
+  poster_path: string;
+  vote_average: number;
+}
 const MovieTypePage = () => {
   const prms = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const axe = Number(searchParams.get("page")) || 1;
-  const [results, setresults] = useState<any[]>([]);
+  const [results, setresults] = useState<Movie []>([]);
 
   useEffect(() => {
     const getData = async () => {
@@ -48,6 +53,7 @@ const MovieTypePage = () => {
               onClick={() => router.push(`/movieDetail/${m.id}`)}
               className=" rounded-lg bg-[#F4F4F5] pb-[20px] ">
               <img
+                 alt="lalar"
                  className="rounded-t-lg "
                  src={`https://image.tmdb.org/t/p/original${m.poster_path}`}
               />

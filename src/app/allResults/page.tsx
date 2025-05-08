@@ -4,15 +4,25 @@ const key = process.env.NEXT_PUBLIC_KEY;
 import { useEffect, useState } from "react";
 import { Pagination } from "@/components/pagination";
 import { useSearchParams, useRouter } from "next/navigation";
-
+type Movie = {
+  id: number;
+  title: string;
+  vote_average: number;
+  genre_ids: number[];
+  poster_path: string;
+};
+type Genre = {
+  id: number;
+  name: string;
+};
 export default function AllResultsPage() {
   const router = useRouter();
   const searchParams = useSearchParams(); 
   const query = searchParams.get('query'); 
   const page = Number(searchParams.get("page")) || 1;
-  const [movies, setMovies] = useState<any []>([]);
-  const [ genres, setGenres ] = useState<any[]>([]);
-  const [filteredMovies, setFilteredMovies] = useState<any[]>([]);
+  const [movies, setMovies] = useState<Movie []>([]);
+  const [ genres, setGenres ] = useState<Genre []>([]);
+  const [filteredMovies, setFilteredMovies] = useState<Movie []>([]);
   const [selectedGenreId, setSelectedGenreId] = useState<number[]>([]);
 
   const toggleGenre = (genreId: number) => {
@@ -79,10 +89,11 @@ export default function AllResultsPage() {
                      <div 
                        key={movie.id}
                        onClick={ () => router.push(`/movieDetail/${movie.id}`) } 
-                       className=" rounded-lg bg-[#F4F4F5] pb-[20px] ">
-                       <img 
-                          className=" w-full rounded-t-lg "
-                          src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} />
+                       className="rounded-lg bg-[#F4F4F5] pb-[20px] ">
+                       { movie.poster_path && ( <img
+                          alt="lalar"
+                          className=" rounded-t-lg "
+                          src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} /> )}
                        <p className=" text-[14px] " > ⭐️ {movie.vote_average} <span className="text-[#71717A] text-[12px] " >/10</span> </p> 
                        <p className=" text-[18px] text-[#09090B] ">{movie.title}</p>
                      </div>

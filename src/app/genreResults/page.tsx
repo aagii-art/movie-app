@@ -4,14 +4,23 @@ const key = process.env.NEXT_PUBLIC_KEY;
 import { useEffect, useState } from "react";
 import { Pagination } from "@/components/pagination";
 import { useSearchParams, useRouter } from "next/navigation";
-
+interface Movie {
+  id: number;
+  title: string;
+  vote_average: number;
+  poster_path: string;
+}
+interface Genre {
+  id: number;
+  name: string;
+}
 export default function GenreResultsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const UrlGenreId = searchParams.get("genres");
-  const [movies, setMovies] = useState<any>(null); 
-  const [genres, setGenres] = useState<any[]>([]);
-  const [ numberTitle, setNumberTitle ] = useState( null );
+  const [movies, setMovies] = useState< Movie [] >([]); 
+  const [genres, setGenres] = useState<Genre []>([]);
+  const [ numberTitle, setNumberTitle ] = useState<number | null>( null );
   const currentPage = Number(searchParams.get("page")) || 1 ;
   const selectedGenreIds = UrlGenreId ? UrlGenreId.split(",").map((id) => parseInt(id)) : [];
 
@@ -43,7 +52,7 @@ export default function GenreResultsPage() {
 
   useEffect(() => {
     const fetchMovies = async () => {
-      if (!UrlGenreId) { setMovies(null); setNumberTitle(null); return }; 
+      if (!UrlGenreId) { setMovies([]); setNumberTitle(null); return }; 
       try {
         const res = await axios.get("https://api.themoviedb.org/3/discover/movie", {
           params: {
@@ -108,9 +117,9 @@ export default function GenreResultsPage() {
               key={movie.id}
               onClick={ () => router.push(`/movieDetail/${movie.id}`) } 
               className=" rounded-lg bg-[#F4F4F5] pb-[20px] ">
-                 <img 
+                 {movie.poster_path && (<img 
                   className=" w-full rounded-t-lg "
-                  src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} />
+                  src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} /> )}
                  <p className=" text-[14px] " > ⭐️ {movie.vote_average} <span className="text-[#71717A] text-[12px] " >/10</span> </p> 
                  <p className=" text-[18px] text-[#09090B] ">{movie.title}</p>
               </div>
