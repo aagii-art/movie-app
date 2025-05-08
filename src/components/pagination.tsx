@@ -8,62 +8,51 @@ type Props = {
 export const Pagination = ({ currentPage }: Props) => {
 
   const searchParams = useSearchParams();
-  const query = searchParams.get("query"); 
   const pageNumbers = [];
-  const startPage = Math.max( currentPage - 1, 1 );
+  const id = searchParams.get("id");
+  const query = searchParams.get("query"); 
+  const urlGenreId = searchParams.get("genres");
+  const startPage = Math.max(currentPage - 1, 1);
   const endPage = Math.min( startPage + 2, 10 );
+
   for( let i = startPage; i <= endPage; i++ ){
     pageNumbers.push(i)
   } 
   return (
-    <div className="flex gap-4 justify-center mt-40">
-      {
-        currentPage > 1 && (
+    <div className=" dark:text-white flex gap-[10px] justify-center items-center ml-auto my-[20px] ">
+
+      { currentPage > 1 && (
           <Link 
-          href={`?query=${query}&page=${currentPage - 1}`}
-            className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"  >
-              prev
-          </Link>
-        )
-      }
+              href={`?genres=${urlGenreId}&query=${query}&page=${currentPage - 1}&id=${id}`}
+              className=" hover:text-gray-500"  >
+                   ◁ prev
+          </Link> )}
+
       {startPage > 1 && (
-        
         <Link
-        href={`?query=${query}&page=1`}
-          className={`px-3 py-1 rounded ${
-            currentPage === 1
-              ? "bg-blue-500 text-white"
-              : "bg-gray-200 hover:bg-gray-300"
-          }`}
-        >
-          1
-        </Link> )
-      }
-       { startPage - 2 > 1 &&  <span className="px-2">...</span> }
+            href={`?genres=${urlGenreId}&query=${query}&page=1&id=${id}`}
+            className={` px-[10px] ${ currentPage === 1
+              ? "rounded-md border border-[#E4E4E7]"
+              : "" }`} > 1
+        </Link> )}
+    
+      { startPage - 1 > 1 &&  <span>...</span> }
 
       { pageNumbers.map( (p) => (
         <Link 
-          key={p}
-          href={`?query=${query}&page=${p}`}
-          className={`px-3 py-1 rounded ${
-            p === currentPage
-              ? "bg-blue-500 text-white"
-              : "bg-gray-200 hover:bg-gray-300"}`}
-         >
-          { p }
-         </Link>
-      ) )
+            key={p}
+            href={`?genres=${urlGenreId}&query=${query}&page=${p}&id=${id}`}
+            className={`px-[10px] ${ p === currentPage
+                     ? "rounded-md border border-[#E4E4E7]"
+                     : ""}`} > { p }
+         </Link> ))}
 
-      } 
-      { currentPage < 10 && (
-        <Link
-          href={`?query=${query}&page=${currentPage + 1}`}
-          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
-        >
-            Next
-        </Link>
-      )
-      }
+       { currentPage < 10 && (
+          <Link
+              href={`?axe???????genres=${urlGenreId}&query=${query}&page=${currentPage + 1}&id=${id}`}
+              className="rounded-md hover:text-gray-500" > Next ▷
+          </Link> )}
+      
     </div>
   );
 };

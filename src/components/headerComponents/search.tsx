@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 export const SearchInput = ({
   clickEnter,
   searchMovie,
@@ -27,7 +25,7 @@ export const SearchInput = ({
   clickEnter();
   };
   return (
-    <div className={ `bg-white flex md:flex-1 h-[39px] ${ isButtonClicked ? "flex-1" : " " } border border-[#E4E4E7] items-center rounded-md   ` } >
+    <div className={ `flex md:flex-1 h-[39px] ${ isButtonClicked ? "flex-1" : " " } border bg-white dark:bg-black dark:border-[#27272A] border-[#E4E4E7] items-center rounded-md ` } >
 
       <button
         onClick={ handleButtonClick }
@@ -40,13 +38,13 @@ export const SearchInput = ({
         placeholder="Search.."
         onChange={(e) => { searchMovie(e.target.value); resetIsClickEnter() } }
         onKeyDown={handleKeyDown}
-        className={` w-[flex-1] py-[8px] md:block  border-none focus:outline-none placeholder
+        className={` w-[flex-1] py-[8px] md:block  border-none focus:outline-none placeholder dark:text-white
                    ${ isButtonClicked ? " block  " : " hidden " } `}
       />
       
        { isButtonClicked &&
          <button 
-          className=" w-[16px] ml-auto h-[16px]  flex items-center "
+          className=" w-[16px] ml-auto h-[16px] dark:text-gray-400 flex items-center "
           onClick={ () => setIsButtonClicked(false)} >
              ✕
          </button> }

@@ -1,40 +1,36 @@
 "use client";
-import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import axios from "axios";
-const API_KEY = "7218121adc89327f121be3514953c73f";
+const key = process.env.NEXT_PUBLIC_KEY;
+import { useEffect, useState } from "react";
+import { Pagination } from "@/components/pagination";
+import { useSearchParams, useRouter } from "next/navigation";
 
 export default function GenreResultsPage() {
-   
-  const searchParams = useSearchParams();
-  const pageParam = searchParams.get("page"); 
-  const currentPage = pageParam ? parseInt(pageParam) : 1;
-  const genresParam = searchParams.get("genres");
   const router = useRouter();
-  const [movies, setMovies] = useState<any[]>([]); 
+  const searchParams = useSearchParams();
+  const UrlGenreId = searchParams.get("genres");
+  const [movies, setMovies] = useState<any>(null); 
   const [genres, setGenres] = useState<any[]>([]);
-
-  const selectedGenreIds = genresParam ? genresParam.split(",").map((id) => parseInt(id)) : [];
+  const [ numberTitle, setNumberTitle ] = useState( null );
+  const currentPage = Number(searchParams.get("page")) || 1 ;
+  const selectedGenreIds = UrlGenreId ? UrlGenreId.split(",").map((id) => parseInt(id)) : [];
 
   const handleGenreClick = (genreId: number) => {
-    let newSelectedGenres: number[] = [];
-  
+    let updatedSelectedGenres: number[] = [];
     if (selectedGenreIds.includes(genreId)) {
-      newSelectedGenres = selectedGenreIds.filter((id) => id !== genreId);
+       updatedSelectedGenres = selectedGenreIds.filter((id) => id !== genreId);
     } else {
-      newSelectedGenres = [...selectedGenreIds, genreId];
+       updatedSelectedGenres = [...selectedGenreIds, genreId];
     }
-  
-    const queryString = newSelectedGenres.join(",");
-    router.push(`/genreResults?genres=${queryString}`);
+    router.push(`/genreResults?genres=${updatedSelectedGenres.join(",")}`);
   };
   
   useEffect(() => {
     const fetchGenres = async () => {
       try {
-        const res = await axios.get("https://api.themoviedb.org/3/genre/movie/list", {
+        const res = await axios("https://api.themoviedb.org/3/genre/movie/list", {
           params: {
-            api_key: API_KEY,
+            api_key: key,
           },
         });
         setGenres(res.data.genres);
@@ -44,88 +40,86 @@ export default function GenreResultsPage() {
     };
     fetchGenres();
   }, []);
+
   useEffect(() => {
     const fetchMovies = async () => {
-      if (!genresParam) return; 
+      if (!UrlGenreId) { setMovies(null); setNumberTitle(null); return }; 
       try {
         const res = await axios.get("https://api.themoviedb.org/3/discover/movie", {
           params: {
-            api_key: "7218121adc89327f121be3514953c73f",
-            with_genres: genresParam,
-            page: currentPage, 
-
+            api_key : key,
+            with_genres : UrlGenreId,
+            page : currentPage, 
           },
         });
-        setMovies(res.data.results); 
+        setNumberTitle(res.data.total_results);
+        setMovies(res.data.results.slice(0,12)); 
       } catch (error) {
-        console.error("Error fetching movies", error);
+        console.error(error);
       }
     };
     fetchMovies(); 
-  }, [genresParam, currentPage ]); 
+  }, [UrlGenreId, currentPage ]);
+   
   return (
-    <div className="p-4 pt-[180px] bg-amber-100 min-h-screen flex ">
-
-       <div className=" p-4 border-r border-gray-300 w-[40%] ">
-        <h2 className="text-xl font-bold mb-4">Genres</h2>
-        <div className="flex flex-col gap-2">
-          {genres.map((genre) => (
-            <button
-              key={genre.id}
-              onClick={() => handleGenreClick(genre.id)}
-              className={`px-3 py-2 rounded ${
-                selectedGenreIds.includes(genre.id)
-                  ? "bg-blue-500 text-white"
-                  : "bg-white hover:bg-gray-200"
-              }`}
-            >
-              {genre.name}
-            </button>
-          ))}
-        </div>
-      </div>
-       
-      <h1 className="text-2xl font-bold mb-6">Genre Results</h1>
-      <p>Selected genres: {selectedGenreIds.join(", ")}</p>
-      <div className="grid grid-cols-2 gap-4">
-      { movies.length > 0 ? (
-          movies.map((movie) => (
-            <div 
-             key={movie.id} 
-             onClick={ () => router.push(`/movieDetail/${movie.id}`) }
-             className="border p-4 rounded shadow">
-              <h2 className="text-lg font-semibold">{movie.title}</h2>
-              <p className="text-sm">{movie.overview}</p>
-            </div>
-          ))
-        ) : (
-          <p>No movies found for the selected genres.</p>
-        )}
-
-        <div className="flex gap-4 mt-6">
-        <button
-          onClick={() => {
-            if (currentPage > 1) {
-              router.push(`/genreResults?genres=${selectedGenreIds.join(",")}&page=${currentPage - 1}`);
-            }
-          }}
-          className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
-          disabled={currentPage === 1}
-        >
-          Previous
-        </button>
-         <span> { currentPage } </span>
-        <button
-          onClick={() => {
-            router.push(`/genreResults?genres=${selectedGenreIds.join(",")}&page=${currentPage + 1}`);
-          }}
-          className="px-4 py-2 bg-blue-500 text-white rounded"
-        >
-          Next
-        </button>
-       </div>
+     <div className=" flex flex-col min-h-[72vh] md:flex-row mt-[100px] mb-[20px] w-[90%]">
+       <div className="  md:w-[35%] ">
+         <p className="text-[30px] text-[#09090B] dark:text-white font-semibold"> Search filter </p>
+         <div className=" py-[20px] " >
+           <p className=" text-[24px] dark:text-white " >Genres</p>
+           <p className=" text-[16px] dark:text-white " > See lists of movies by genre</p>
+         </div>
       
-      </div>
+         <div className="flex flex-wrap gap-[14px]" >
+           {genres.map((v) => {
+            const isSelected = selectedGenreIds.includes(v.id);
+              return (
+                <button
+                 key={v.id}
+                 onClick={() => { handleGenreClick(v.id) }}
+                 className={`border text-[12px] rounded-full px-[10px] py-[1px]  border-[#E4E4E7] transition-all duration-200  ${
+                   isSelected
+                      ? "bg-blue-500 dark:bg-white dark:text-black text-white border-blue-600 dark:border-[#27272A]"
+                      : "bg-white dark:bg-black dark:border-[#27272A] text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-500 "}`} >
+                      {v.name} <span> ➤ </span>
+                </button>
+            )})}
+          </div>
+       </div>
+
+       <div className=" flex flex-col flex-1 md:pl-[20px] mt-[60px] md:ml-[10px] md:border-l md:border-l-[#E4E4E7] dark:border-[#27272A] " >
+
+          <p className="flex dark:text-white flex-wrap gap-[10px] font-semibold text-[20px] mb-6">
+             <span> { numberTitle ? numberTitle : "0" } titles in " </span>
+              {  selectedGenreIds.map( ( id ) => {
+                    const selectedGenresName = genres.find( (g) => g.id === id );
+                    return (
+                         <span
+                           key={id}
+                           className=" mr-[10px] "> 
+                                { selectedGenresName?.name }
+                         </span> )
+              })}
+              <span>"</span>
+          </p>
+          <div className=" grid grid-cols-2 md:grid-cols-4 gap-[20px]">
+          { movies?.length ? movies.map((movie : any ) => (
+             <div 
+              key={movie.id}
+              onClick={ () => router.push(`/movieDetail/${movie.id}`) } 
+              className=" rounded-lg bg-[#F4F4F5] pb-[20px] ">
+                 <img 
+                  className=" w-full rounded-t-lg "
+                  src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} />
+                 <p className=" text-[14px] " > ⭐️ {movie.vote_average} <span className="text-[#71717A] text-[12px] " >/10</span> </p> 
+                 <p className=" text-[18px] text-[#09090B] ">{movie.title}</p>
+              </div>
+            )) : ( <p className=" text-center " > No results found. </p> )
+          }
+          </div>
+
+          <Pagination currentPage={currentPage} />  
+       </div>
     </div>
   );
 }

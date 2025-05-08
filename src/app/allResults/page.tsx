@@ -1,18 +1,19 @@
 "use client";
-import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import axios from "axios";
+const key = process.env.NEXT_PUBLIC_KEY;
+import { useEffect, useState } from "react";
 import { Pagination } from "@/components/pagination";
+import { useSearchParams, useRouter } from "next/navigation";
+
 export default function AllResultsPage() {
-  const [ genres, setGenres ] = useState< any [] >([])
-  const [movies, setMovies] = useState<any []>([]);
-  const [filteredMovies, setFilteredMovies] = useState<any []>([]);
-  const [selectedGenreId, setSelectedGenreId] = useState<number []>([]);
   const router = useRouter();
   const searchParams = useSearchParams(); 
   const query = searchParams.get('query'); 
-  const pageParam = searchParams.get('page');
-  const page = pageParam ? parseInt(pageParam) : 1;
+  const page = Number(searchParams.get("page")) || 1;
+  const [movies, setMovies] = useState<any []>([]);
+  const [ genres, setGenres ] = useState<any[]>([]);
+  const [filteredMovies, setFilteredMovies] = useState<any[]>([]);
+  const [selectedGenreId, setSelectedGenreId] = useState<number[]>([]);
 
   const toggleGenre = (genreId: number) => {
     if (selectedGenreId.includes(genreId)) {
@@ -22,35 +23,13 @@ export default function AllResultsPage() {
       setSelectedGenreId(prev => [...prev, genreId]);
     }
   };
-  useEffect(() => {
-    if (query) {
-    
-      const fetchMovies = async () => {
-        try {
-          const res = await axios.get("https://api.themoviedb.org/3/search/movie", {
-            params: {
-              api_key: "7218121adc89327f121be3514953c73f",
-              query: query, 
-              page: page,
-            },
-          });
-          setMovies(res.data.results); 
-          console.log( " page ", res);
-
-        } catch (error) {
-          console.error("Error fetching movies", error);
-        }
-      };
-      fetchMovies();
-    }
-  }, [query, page]); 
 
   useEffect(() => {
     const fetchGenres = async () => {
       try {
         const res = await axios.get("https://api.themoviedb.org/3/genre/movie/list", {
           params: {
-            api_key: "7218121adc89327f121be3514953c73f",
+            api_key: key,
           },
         });
         setGenres(res.data.genres);
@@ -62,50 +41,77 @@ export default function AllResultsPage() {
   }, []);
 
   useEffect(() => {
+      const fetchMovies = async () => {
+        try {
+            const res = await axios( "https://api.themoviedb.org/3/search/movie" , {
+               params : {
+                        api_key: key,
+                        query : query,
+                        page : page
+            }})
+            setMovies(res.data.results.slice(0,8)); 
+        } catch (error) {
+            console.error("Error fetching movies", error);
+        }
+      };
+      fetchMovies();
+  }, [query, page]); 
+
+  useEffect(() => {
     if (selectedGenreId.length === 0) {
-      setFilteredMovies(movies);
+        setFilteredMovies(movies);
     } else {
         const filtered = movies.filter(movie =>
-          selectedGenreId.every( (id) => movie.genre_ids.includes(id) )
-      );
-      setFilteredMovies(filtered);
+              selectedGenreId.every( (id) => movie.genre_ids.includes(id) ));
+        setFilteredMovies(filtered);
     }
   }, [selectedGenreId, movies]);
-  
+   
   return (
-    <div className="  w-full bg-blue-100  ">
-      <div className=" w-[60%] bg-gray-50 " >
-      <h1 className="text-2xl font-bold mb-6">Results for: "{query}"</h1>
-      {filteredMovies.length > 0 && (
-        <div className="grid grid-cols-2 gap-4">
-          {filteredMovies.map((movie) => ( 
-            <div 
-             key={movie.id}
-             onClick={ () =>  router.push(`/movieDetail/${movie.id}`) }
-             className="border p-4 rounded shadow">
-              <h2 className="text-lg font-semibold">{movie.title}</h2>
-              <p className="text-sm">{movie.overview}</p>
-            </div>
-          ))}
-        </div>
-      )}
-      <Pagination currentPage={page}  />
+    <div className=" min-h-[73vh] md:flex items-start w-[90%] mt-[100px]">
+
+      <div className=" flex flex-col md:w-[60%] h-auto md:border-r md:pr-[30px] md:border-r-[#E4E4E7] dark:border-[#27272A] md:pb-[10vh] " >
+          <p className="text-[30px] dark:text-white font-semibold ">Search results</p>
+          <p className=" text-[20px] dark:text-white font-semibold my-[20px] " > { filteredMovies.length } results for <span>"{ query }"</span></p>
+          {filteredMovies.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-[30px] ">
+                  {filteredMovies.map((movie) => ( 
+                     <div 
+                       key={movie.id}
+                       onClick={ () => router.push(`/movieDetail/${movie.id}`) } 
+                       className=" rounded-lg bg-[#F4F4F5] pb-[20px] ">
+                       <img 
+                          className=" w-full rounded-t-lg "
+                          src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} />
+                       <p className=" text-[14px] " > ⭐️ {movie.vote_average} <span className="text-[#71717A] text-[12px] " >/10</span> </p> 
+                       <p className=" text-[18px] text-[#09090B] ">{movie.title}</p>
+                     </div>
+                   ))}
+               </div>
+          )}
+          <Pagination currentPage={page}  />
       </div>
-      <div className=" bg-amber-50 flex flex-wrap gap-[10px] dark:bg-red-400" >
-        { genres.map( (v) => (
-          <button
-            className={`border px-2 py-1 rounded-md transition-all duration-200 ${
-            selectedGenreId.includes(v.id)
-              ? "bg-blue-500 text-white border-blue-600"
-              : "bg-white text-black hover:bg-gray-100"
-           }`}
-          onClick={() => toggleGenre(v.id)}
-          key={ v.id } >
-            { v.name }
-          </button>
-        ) )
-        }
-      </div>
+
+       <div className=" flex-1 md:pl-[30px] mb-[20px]" >
+          <div className=" pt-[40px] " >
+            <p className=" text-[24px] font-medium dark:text-white " >Search by genre</p>
+            <p className=" text-[16px] dark:text-white  " > See lists of movies by genre</p>
+          </div>
+
+            {genres.map((v) => {
+                   const isSelected = selectedGenreId.includes(v.id);
+                   return (
+                        <button
+                          key={v.id}
+                          onClick={() => { toggleGenre(v.id) }}
+                          className={`border text-[12px] rounded-full px-[10px] my-[10px] mr-[10px]  border-[#E4E4E7] transition-all duration-200 
+                          ${isSelected
+                             ? "bg-blue-500 dark:bg-white dark:text-black text-white border-blue-600 dark:border-[#27272A]"
+                             : "bg-white dark:bg-black dark:border-[#27272A] text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-500 "}`} >
+                           {v.name} < span className=" ml-[5px] " > ➤ </span>
+                        </button>
+            )})}
+       </div>
     </div>
   );
 }

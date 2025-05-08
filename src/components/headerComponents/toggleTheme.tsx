@@ -15,11 +15,11 @@ const ThemeToggle = ( { isButtonClicked } : { isButtonClicked  : any } ) => {
   return (
     <button
       onClick={() => setIsDarkMode(!isDarkMode)}
-      className={`p-2 h-[36px] w-[36px] bg-gray-700 dark:bg-white rounded ${ isButtonClicked ? "hidden" : "block" } `}
+      className={` h-[36px] w-[36px] bg-gray-700 dark:bg-white rounded 
+                ${ isButtonClicked ? "hidden" : "block" } `}
     >
       {isDarkMode ? " ☀️ " : "🌙"}
     </button>
   );
 };
-
 export default ThemeToggle;
