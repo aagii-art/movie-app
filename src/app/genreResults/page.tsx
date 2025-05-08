@@ -99,7 +99,7 @@ export default function GenreResultsPage() {
        <div className=" flex flex-col flex-1 md:pl-[20px] mt-[60px] md:ml-[10px] md:border-l md:border-l-[#E4E4E7] dark:border-[#27272A] " >
 
           <p className="flex dark:text-white flex-wrap gap-[10px] font-semibold text-[20px] mb-6">
-             <span> { numberTitle ? numberTitle : "0" } titles in " </span>
+             <span> { numberTitle ? numberTitle : "0" } titles in &#34; </span>
               {  selectedGenreIds.map( ( id ) => {
                     const selectedGenresName = genres.find( (g) => g.id === id );
                     return (
@@ -109,10 +109,10 @@ export default function GenreResultsPage() {
                                 { selectedGenresName?.name }
                          </span> )
               })}
-              <span>"</span>
+              <span>&#34;</span>
           </p>
           <div className=" grid grid-cols-2 md:grid-cols-4 gap-[20px]">
-          { movies?.length ? movies.map((movie : any ) => (
+          { movies?.length ? movies.map((movie : Movie ) => (
              <div 
               key={movie.id}
               onClick={ () => router.push(`/movieDetail/${movie.id}`) } 

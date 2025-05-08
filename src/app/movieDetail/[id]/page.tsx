@@ -43,7 +43,7 @@ export default function MovieDetail () {
     const [showTrailer, setShowTrailer] = useState(false);
     const [similarMovies, setSimilarMovies] = useState<SimilarMovie []>([]);
 
-    const movieTime = ( v : any ) => {
+    const movieTime = ( v : number ) => {
       const hour = Math.floor( v / 60 );
       const min = v % 60;
       return `${hour}h ${ min }m `
@@ -78,7 +78,7 @@ export default function MovieDetail () {
               const topCast = credits.cast.slice(0, 3); 
               if (directorData) setDirector(directorData.name);
               if (writerData) setWriter(writerData.name);
-              setStar(topCast.map((actor: any) => actor.name));
+              setStar(topCast.map((actor: { name : string }) => actor.name));
               const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
               const movieNumber = isMobile ? 2 : 5;
               const similarRes = await axios(`https://api.themoviedb.org/3/movie/${id}/recommendations`, {
@@ -145,7 +145,7 @@ export default function MovieDetail () {
           <div  >
             { movie.genres && 
               <p className=" flex flex-wrap gap-[10px] my-[20px] " > 
-               { movie.genres.map( ( g : any ) => (
+               { movie.genres.map( ( g : Genre ) => (
                 <span key={ g.id }
                  className=" text-[#09090B] dark:text-white text-[12px] font-semibold px-[10px] border border-[#E4E4E7] dark:border-[#27272A] rounded-full" >
                   { g.name }

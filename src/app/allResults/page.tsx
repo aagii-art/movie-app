@@ -82,7 +82,7 @@ export default function AllResultsPage() {
 
       <div className=" flex flex-col md:w-[60%] h-auto md:border-r md:pr-[30px] md:border-r-[#E4E4E7] dark:border-[#27272A] md:pb-[10vh] " >
           <p className="text-[30px] dark:text-white font-semibold ">Search results</p>
-          <p className=" text-[20px] dark:text-white font-semibold my-[20px] " > { filteredMovies.length } results for <span>"{ query }"</span></p>
+          <p className=" text-[20px] dark:text-white font-semibold my-[20px] " > { filteredMovies.length } results for <span>&#34; { query } &#34; </span></p>
           {filteredMovies.length > 0 && (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-[30px] ">
                   {filteredMovies.map((movie) => ( 
@@ -91,7 +91,7 @@ export default function AllResultsPage() {
                        onClick={ () => router.push(`/movieDetail/${movie.id}`) } 
                        className="rounded-lg bg-[#F4F4F5] pb-[20px] ">
                        { movie.poster_path && ( <img
-                          alt="lalar"
+                          alt={movie.title} 
                           className=" rounded-t-lg "
                           src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} /> )}
                        <p className=" text-[14px] " > ⭐️ {movie.vote_average} <span className="text-[#71717A] text-[12px] " >/10</span> </p> 

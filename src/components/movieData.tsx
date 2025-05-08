@@ -2,7 +2,7 @@
 import axios from "axios";
 import { Button } from "./ui/button";
 const key = process.env.NEXT_PUBLIC_KEY;
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 type Movie = {
   id: number;
   title: string;
@@ -20,18 +20,21 @@ export const MovieData = () => {
   const [movies, setMovies] = useState<Movie []>([]);
   const [ currentIndex, setCurrentIndex ] = useState<number>( 0 )
   const [ showTrailer, setShowTrailer ] = useState<boolean>(false)
-  
-  useEffect( () => {
-    let interval : any;
-    if( !showTrailer && movies.length > 0 ){
-        interval = setInterval( () => {
-        setCurrentIndex( ( prevValue ) => ( prevValue + 1 ) % movies.length );
-      }, 5000 )
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    if (!showTrailer && movies.length > 0) { 
+      intervalRef.current = setInterval(() => {
+        setCurrentIndex((prevValue) => (prevValue + 1) % movies.length);
+      }, 5000);
     }
-    return () => clearInterval(interval);
-  }, [movies, showTrailer, currentIndex ] )
-     
-  
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current); 
+      }
+    };
+  }, [movies, showTrailer, currentIndex]); 
+
   useEffect(() => {
     const getNowPlaying = async () => {
       try {
@@ -58,7 +61,7 @@ export const MovieData = () => {
         }));
         setMovies(moviesWithVideos);
       } catch (error) {
-        console.log(" get axios error ");
+        console.log(" get axios error ", error);
       }
     };
     getNowPlaying();

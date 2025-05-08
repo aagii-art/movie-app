@@ -74,7 +74,7 @@ export const Header = () => {
         );
         setGenres(res.data.genres);
       } catch (error) {
-        console.log(" axios genres aldaa ");
+        console.log(" axios genres aldaa ", error);
       }
     };
     getGenres();
@@ -90,7 +90,7 @@ export const Header = () => {
             query: searchMovie,
           },
         });
-        const movies : any [] = res.data.results.slice(0,5);
+        const movies : Movie [] = res.data.results.slice(0,5);
         setSearchResults(movies);
       } catch (error) {
         console.error("konoo aldaa", error);
@@ -143,7 +143,7 @@ export const Header = () => {
                       }}
                       className={` hover:underline mt-[10px] text-[14px] text-[#09090B] dark:text-white ${!isButtonClicked ? "hidden" : "block"}  md:block `}
                      >
-                         See all results for "{searchMovie}"
+                         See all results for &#34;{searchMovie}&#34;
                      </button>
                  </div>
               </div>
