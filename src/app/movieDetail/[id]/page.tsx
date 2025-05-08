@@ -3,6 +3,7 @@ import axios from "axios";
 const key = process.env.NEXT_PUBLIC_KEY;
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation"
+import Image from "next/image";
 interface Genre {
   id: number;
   name: string;
@@ -123,7 +124,7 @@ export default function MovieDetail () {
 
         <div className=" flex gap-[32px] h-[30vh] " >
            { movie.poster_path &&
-               <img src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} className=" w-[25%]  object-cover hidden md:block " alt="" />
+               <img src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} className=" w-[25%]  object-cover hidden md:block " alt="wef" />
            }
            <div 
              style={{ backgroundImage : `url(https://image.tmdb.org/t/p/original/${movie.backdrop_path})` }}
@@ -141,7 +142,7 @@ export default function MovieDetail () {
         <div className=" flex gap-[20px] " > 
           <img 
             className=" w-[40%] h-[20vh] mt-[20px] md:hidden "
-            src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt=""  />
+            src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt="eeew"  />
           <div  >
             { movie.genres && 
               <p className=" flex flex-wrap gap-[10px] my-[20px] " > 

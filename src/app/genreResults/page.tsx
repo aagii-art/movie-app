@@ -4,6 +4,7 @@ const key = process.env.NEXT_PUBLIC_KEY;
 import { useEffect, useState } from "react";
 import { Pagination } from "@/components/pagination";
 import { useSearchParams, useRouter } from "next/navigation";
+import Image from "next/image";
 interface Movie {
   id: number;
   title: string;
@@ -116,8 +117,10 @@ export default function GenreResultsPage() {
              <div 
               key={movie.id}
               onClick={ () => router.push(`/movieDetail/${movie.id}`) } 
-              className=" rounded-lg bg-[#F4F4F5] pb-[20px] ">
-                 {movie.poster_path && (<img 
+              className=" relative rounded-lg bg-[#F4F4F5] pb-[20px] ">
+                 {movie.poster_path && (
+                <img
+                  alt="lalar" 
                   className=" w-full rounded-t-lg "
                   src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} /> )}
                  <p className=" text-[14px] " > ⭐️ {movie.vote_average} <span className="text-[#71717A] text-[12px] " >/10</span> </p> 
