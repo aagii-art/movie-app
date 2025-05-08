@@ -16,7 +16,7 @@ type Genre = {
   id: number;
   name: string;
 };
-export default function AllResultsPage() {
+export const AllResultsPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams(); 
   const query = searchParams.get('query'); 
