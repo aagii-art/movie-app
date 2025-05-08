@@ -79,7 +79,7 @@ export const Header = () => {
     };
     getGenres();
   }, [] );
-
+ 
   useEffect(() => {
     const fetchMovies = async () => {
       if (searchMovie.trim().length < 2) { setSearchResults([]); return }

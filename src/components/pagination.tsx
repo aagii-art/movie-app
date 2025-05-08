@@ -49,7 +49,7 @@ export const Pagination = ({ currentPage }: Props) => {
 
        { currentPage < 10 && (
           <Link
-              href={`?axe???????genres=${urlGenreId}&query=${query}&page=${currentPage + 1}&id=${id}`}
+              href={`?genres=${urlGenreId}&query=${query}&page=${currentPage + 1}&id=${id}`}
               className="rounded-md hover:text-gray-500" > Next ▷
           </Link> )}
       
