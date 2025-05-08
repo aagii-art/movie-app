@@ -4,7 +4,6 @@ const key = process.env.NEXT_PUBLIC_KEY;
 import { useEffect, useState } from "react";
 import { Pagination } from "@/components/pagination";
 import { useSearchParams, useRouter } from "next/navigation";
-import Image from "next/image";
 interface Movie {
   id: number;
   title: string;

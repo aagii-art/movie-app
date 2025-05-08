@@ -3,7 +3,6 @@ import axios from "axios";
 const key = process.env.NEXT_PUBLIC_KEY;
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation"
-import Image from "next/image";
 interface Genre {
   id: number;
   name: string;
