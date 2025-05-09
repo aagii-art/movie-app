@@ -78,7 +78,7 @@ export const MovieData = () => {
                         className="w-[90%] h-[40%] flex flex-col gap-[10px]">
                         { showTrailer && currentMovie.trailerKey ? ( <>
                             <div className="fixed inset-0 backdrop-blur-[5px] z-[1]"></div>
-                            <div className="absolute top-[10%]  w-[85%] h-[100%] z-[1] " >
+                            <div className="absolute top-[10%]  w-[85%] h-[100%] z-[2] " >
                                   <iframe
                                      src={`https://www.youtube.com/embed/${currentMovie.trailerKey}`}
                                      className=" w-full  h-full "
