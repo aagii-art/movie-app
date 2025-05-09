@@ -104,8 +104,7 @@ export const Header = () => {
 
           <div
               onClick={() => router.push('/')}
-              className={` flex  gap-[8px] mt-[10px] cursor-pointer ${ isButtonClicked ? "hidden" : "" } `}
-           >
+              className={` flex  gap-[8px] mt-[10px] cursor-pointer ${ isButtonClicked ? "hidden" : "" } `} >
               <img src="/img/MovieIcon.jpg" alt="" className=" w-[20px] h-[20px] rounded-sm " />
               <p className={`text-[16px] ${inter.className} font-bold italic text-[#4338CA] `}>Movie Z</p>
           </div>
@@ -123,8 +122,7 @@ export const Header = () => {
                   <span className={ ` ${ isButtonClicked ? "hidden" : "block" } text-[14px] ` } > Genre </span> 
                 </Button>
                 <SearchInput isButtonClicked={isButtonClicked} setIsButtonClicked={setIsButtonClicked}
-                             searchMovie={setSearchMovie} clickEnter={clickEnter} resetIsClickEnter={resetIsClickEnter}
-                />
+                             searchMovie={setSearchMovie} clickEnter={clickEnter} resetIsClickEnter={resetIsClickEnter}/>
              </div>
 
              { searchResults.length > 0 && !isSeeMoreClicked ?

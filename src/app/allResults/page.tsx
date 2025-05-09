@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { AllResultsPage } from "./puntsag/paged";
+import { AllResultsPage } from "./paged";
 
 export default function Page() {
   return (

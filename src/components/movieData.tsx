@@ -75,9 +75,10 @@ export const MovieData = () => {
             { movies.length  > 0 && (
                     <div
                         key={currentIndex}
-                        className=" w-[90%] h-[40%] flex flex-col gap-[10px]">
-                        { showTrailer && currentMovie.trailerKey ? 
-                             (<div className=" absolute top-[10%]  w-[85%] h-[100%] " >
+                        className="w-[90%] h-[40%] flex flex-col gap-[10px]">
+                        { showTrailer && currentMovie.trailerKey ? ( <>
+                            <div className="fixed inset-0 backdrop-blur-[5px] z-[1]"></div>
+                            <div className="absolute top-[10%]  w-[85%] h-[100%] z-[1] " >
                                   <iframe
                                      src={`https://www.youtube.com/embed/${currentMovie.trailerKey}`}
                                      className=" w-full  h-full "
@@ -89,7 +90,7 @@ export const MovieData = () => {
                                         hover:bg-gray-500 bg-gray-400 rounded-full " >
                                                ✕
                                   </Button>
-                              </div>) : (
+                              </div> </> ) : (
                                          <> 
                                            <p className=" text-[16px] text-white " > Now playing : </p>
                                            <h1 className=" text-[36px] text-white font-bold " > { currentMovie.title } </h1>
@@ -122,8 +123,10 @@ export const MovieData = () => {
           style={{ backgroundImage : movies.length > 0 ? `url(https://image.tmdb.org/t/p/original/${movies[currentIndex].backdrop_path})` : "none" }}
            >
          </div>
-         { showTrailer && currentMovie.trailerKey && (
-                 <div className=" md:hidden absolute top-[100px]  w-[85%] h-[500px] " >
+         { showTrailer && currentMovie.trailerKey && 
+              <>
+                 <div className="fixed inset-0 backdrop-blur-[5px] z-[1]"></div>
+                 <div className=" md:hidden absolute top-[100px] z-[2] w-[85%] h-[500px] " >
                     <iframe
                        src={`https://www.youtube.com/embed/${currentMovie.trailerKey}`}
                        className=" w-full  h-full "
@@ -134,7 +137,8 @@ export const MovieData = () => {
                       className="text-white absolute z-[2] w-[30px] h-[30px] right-[2%] top-[2%] hover:bg-gray-500 bg-gray-400 rounded-full " >
                         ✕
                    </Button>
-                 </div>)
+                 </div> 
+              </>   
            }
            <div className=" w-full  md:hidden p-[20px] border-b border-gray-300 " >
                { movies.length > 0 && <>
@@ -157,5 +161,5 @@ export const MovieData = () => {
                </>}
            </div>
 
-         </>);
+         </>)
 };
